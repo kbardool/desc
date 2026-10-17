@@ -1,0 +1,85 @@
+[project]
+name = "desc"
+version = "3.0.0"
+description = "Deep Embedded Single-cell RNA-seq Clustering"
+readme = "README.md"
+requires-python = ">=3.14"
+license = "MIT"
+authors = [
+    { name = "Xiangjie Li", email = "ele717@163.com" },
+    { name = "Gang Hu", email = "huggs@nankai.edu.cn" },
+    { name = "Mingyao Li", email = "mingyao@pennmedicine.upenn.edu" },
+    { name = "Yafei Lyu", email = "lyuyafei@gmail.com" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+    "torch>=2.9",
+    "numpy>=2.0",
+    "pandas>=2.2",
+    "scipy>=1.13",
+    "anndata>=0.11",
+    "scanpy>=1.11",
+    "igraph>=0.11",
+    "h5py>=3.10",
+]
+
+[project.optional-dependencies]
+# Select a PyTorch build when developing with `uv sync --extra <name>`.
+# Without an extra, torch comes from PyPI (CUDA on Linux, CPU/MPS elsewhere).
+cpu = ["torch>=2.9"]
+cu126 = ["torch>=2.9"]
+cu130 = ["torch>=2.9"]
+
+[project.urls]
+Homepage = "https://github.com/eleozzr/desc"
+Documentation = "https://eleozzr.github.io/desc"
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["uv_build>=0.10,<0.11"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "desc"
+module-root = ""
+# desc/original is the legacy TensorFlow 1 / Keras code and desc/datasets/pbmc
+# is the raw 10X matrix (pbmc.h5ad holds the same data); neither ships.
+source-include = ["tests/**"]
+source-exclude = ["desc/original", "desc/datasets/pbmc"]
+
+[tool.uv]
+conflicts = [[{ extra = "cpu" }, { extra = "cu126" }, { extra = "cu130" }]]
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu", extra = "cpu" },
+    { index = "pytorch-cu126", extra = "cu126" },
+    { index = "pytorch-cu130", extra = "cu130" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

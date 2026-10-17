@@ -18,72 +18,55 @@ The [**desc**](https://github.com/eleozzr/desc) package is an implementation of 
 - Obtain soft-clustering assignments of cells.
 - Visualize the cell clustering results and  the  gene expression patterns.
 
-Because of the difference between `tensorflow 1*` and `tensorflow 2*`, we updated our [desc](https://github.com/eleozzr/desc) algorithm into two version such that it can be compatible with `tensorflow 1*` and `tensorflow 2*`, respectively. 
+Starting with `desc 3.0`, DESC is implemented in [PyTorch](https://pytorch.org) and requires Python 3.14 or newer. The public API is unchanged: existing calls such as `desc.train(adata, ...)` keep working. The older releases remain available for their TensorFlow versions:
 
-1. For  `tensorflow 1*`, we released `desc(2.0.3)`. Please see our jupyter notebook example [desc_2.0.3_paul.ipynb](./desc_2.0.3_paul.ipynb)
-2. For  `tensorflow 2*`, we released `desc(2.1.1)`. Please see our jupyter notebook example [desc_2.1.1_paul.ipynb](./desc_2.1.1_paul.ipynb)
+1. For  `tensorflow 1*`, use `desc(2.0.3)`. Please see our jupyter notebook example [desc_2.0.3_paul.ipynb](./jupyter_notebook/desc_2.0.3_paul.ipynb)
+2. For  `tensorflow 2*`, use `desc(2.1.1)`. Please see our jupyter notebook example [desc_2.1.1_paul.ipynb](./jupyter_notebook/desc_2.1.1_paul.ipynb)
 
 
 <br>
 
 # Installation
 
-To install  `desc` package you must make sure that your python version is either  `3.5.x` or `3.6.x`. If you don’t know the version of python you can check it by:
-```python
->>>import platform
->>>platform.python_version()
-#3.5.3
->>>import tensorflow as tf
->>> tf.__version__
-#1.7.0
-```
-**Note:** Because desc depend on `tensorflow`, you should make sure the version of `tensorflow` is lower than `2.0` if you want to get the same results as the results in our paper.
-Now you can install the current release of `desc` by the following three ways.
-
-* PyPI  
-Directly install the package from PyPI.
+`desc 3.0` requires Python `3.14+`. We recommend [uv](https://docs.astral.sh/uv/) for installation:
 
 ```bash
-$ pip install desc
-```
-**Note**: you need to make sure that the `pip` is for python3，or we should install desc by
-```bash 
-python3 -m pip install desc 
-#or
-pip3 install desc
-```
-
-If you do not have permission (when you get a permission denied error), you should install desc by 
-
-```bash
-$ pip install --user desc
+# add desc to your uv project
+uv add desc
+# or install it into the current environment
+uv pip install desc
+# CPU-only machines can avoid downloading the CUDA build of PyTorch
+uv pip install desc --torch-backend cpu
 ```
 
-* Github  
-Download the package from [Github](https://github.com/eleozzr/desc) and install it locally:
+`pip install desc` works as well.
+
+To work on desc itself, clone the repository and let uv create the environment. Pick a PyTorch build with an extra: `cpu`, `cu126` or `cu130`. Without an extra, PyTorch comes from PyPI (the CUDA build on Linux).
 
 ```bash
 git clone https://github.com/eleozzr/desc
 cd desc
-pip install .
+uv sync --extra cpu
+uv run pytest
+uv run python -c "import desc; desc.run_desc_test()"
 ```
 
-* Anaconda
+To train on a GPU, pass both `use_GPU=True` and `GPU_id`, for example `desc.train(adata, use_GPU=True, GPU_id=0)`. This uses that CUDA device, or the MPS backend on a Mac with Apple silicon. `use_GPU=True` without a `GPU_id` still trains on the CPU, as in desc 2.x.
 
-If you do not have  Python3.5 or Python3.6 installed, consider installing Anaconda  (see [Installing Anaconda](https://docs.anaconda.com/anaconda/install/)). After installing Anaconda, you can create a new environment, for example, `DESC` (*you can change to any name you like*):
+## What changed in 3.0
 
-```bash
-conda create -n DESC python=3.5.3
-# activate your environment 
-source activate DESC 
-git clone https://github.com/eleozzr/desc
-cd desc
-python setup.py build
-python setup.py install
-# now you can check whether `desc` installed successfully!
-```
+* **PyTorch instead of TensorFlow/Keras.** The architecture, initializers, SGD schedules, losses and early stopping follow the 2.x Keras implementation. Results are not bit-identical to 2.x, because the random number generators differ.
+* **GPU.** `use_GPU=True` together with `GPU_id` trains on that CUDA device (or Apple MPS). Without a GPU, desc falls back to the CPU and prints a warning.
+* **Files in `save_dir`** are now PyTorch files: `ae_weights.pt`, `encoder_weights.pt`, `autoencoder_model.pt` and `encoder_model.pt`. You can reload a saved model with `desc.models.network.load_model`. With `use_ae_weights=True`, an `ae_weights.h5` written by desc 2.x is still loaded if no `ae_weights.pt` exists.
+* **Louvain initialization** now uses igraph's Louvain implementation (`community_multilevel`) with the given `louvain_resolution`. The `louvain` package used before cannot be installed on current Python versions.
+* **Bug fixes.**
+  * `alpha` is now passed to the t-distribution kernel. Before, it was always 1.0.
+  * Sparse and `pandas.DataFrame` input to `desc.train` now works.
+  * With `is_stacked=False`, each learning-rate step of the autoencoder pretraining runs 50 epochs, as in the stacked path. Before, each step ran `pretrain_epochs` epochs.
+  * When the louvain step finds only one cluster, desc raises a `ValueError` instead of exiting the interpreter.
+  * Training no longer changes `CUDA_VISIBLE_DEVICES` or the matplotlib backend.
 
-Please check desc [Tutorial](https://eleozzr.github.io/desc/tutorial.html) for more details. And we also provide a [simple example](./paul_desc.md) for reproducing the results of Paul's data in our paper.
+Please check desc [Tutorial](https://eleozzr.github.io/desc/tutorial.html) for more details. Its `desc.train` calls are unchanged in 3.0. The jupyter notebook [desc_3.0_paul.ipynb](./jupyter_notebook/desc_3.0_paul.ipynb) runs a complete analysis of Paul's data with desc 3.0, and the [simple example](./desc_paul.md) shows how to reproduce the results of Paul's data in our paper.
 
 
 <br>

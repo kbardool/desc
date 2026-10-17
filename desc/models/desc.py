@@ -13,31 +13,17 @@
 # limitations under the License.
 # ==============================================================================
 
-from __future__ import division
-from __future__ import print_function
 import os,math
-os.environ['PYTHONHASHSEED'] = '0'
-import matplotlib
-havedisplay = "DISPLAY" in os.environ
-#if we have a display use a plotting backend
-if havedisplay:
-    matplotlib.use('TkAgg')
-else:
-    matplotlib.use('Agg')
 from time import time as get_time
 import random
 import numpy as np
 import pandas as pd
-import tensorflow as tf
+import torch
 import multiprocessing
 from anndata import AnnData
 import scanpy as sc
-from scipy.sparse import issparse
-try:
-    from .network import *
-except:
-    from network import *
-#or 
+from .network import DescModel, SGD
+
 def getdims(x=(10000,200)):
     """
     This function will give the suggested nodes for each encoder layer
@@ -58,6 +44,21 @@ def getdims(x=(10000,200)):
     else:
         dims=[x[-1],16]
     return dims
+
+
+def get_device(use_GPU=False,GPU_id=None):
+    """
+    The torch device used for training: the GPU `GPU_id` if `use_GPU` is True and `GPU_id` is not None
+    (CUDA, or Apple MPS), otherwise the CPU.
+    """
+    if use_GPU and GPU_id is not None:
+        #if you use GPU,you must be sure that there is GPU in your device
+        if torch.cuda.is_available():
+            return torch.device("cuda:"+str(GPU_id).split(",")[0].strip())
+        if torch.backends.mps.is_available():
+            return torch.device("mps")
+        print("Warning: use_GPU=True but no GPU is available, the CPU will be used")
+    return torch.device("cpu")
 
     
 def train_single(data,dims=None,
@@ -99,71 +100,64 @@ def train_single(data,dims=None,
     if dims is None:
         dims=getdims(adata.shape)
     assert dims[0]==adata.shape[-1],'the number of columns of x doesnot equal to the first element of dims, we must make sure that dims[0]==x.shape[0]'
-    #if use_GPU and tf.test.is_gpu_available():
 #set seed
     random.seed(random_seed)
     np.random.seed(random_seed)
-    #tf.set_random_seed(random_seed)
-    tf.random.set_seed(random_seed)
-    #tf.set_random_seed(random_seed) if tf.__version__ < "2.0" else tf.random.set_seed(random_seed)
+    torch.manual_seed(random_seed)
     total_cpu=multiprocessing.cpu_count()
-    num_Cores=int(num_Cores) if total_cpu>int(num_Cores) else int(math.ceil(total_cpu/2)) 
+    num_Cores=int(num_Cores) if total_cpu>int(num_Cores) else int(math.ceil(total_cpu/2))
     print('The number of cpu in your computer is',total_cpu)
-    if use_GPU and GPU_id is not None:
-        #if you use GPU,you must be sure that there is GPU in your device
-        try:
-            os.environ["CUDA_VISIBLE_DEVICES"] = str(GPU_id)
-        except:
-            os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+    device=get_device(use_GPU,GPU_id)
+    num_threads=torch.get_num_threads()
+    if device.type=="cpu":
+        torch.set_num_threads(num_Cores)
 
-        #os.environ['CUDA_VISIBLE_DEVICES']=K.tensorflow_backend._get_available_gpus()[0][-1]#use first GPUid
-    else:
-        #set only use cpu
-        os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-        tf.compat.v1.keras.backend.set_session(tf.compat.v1.Session(graph=tf.compat.v1.get_default_graph(),config=tf.compat.v1.ConfigProto(intra_op_parallelism_threads=num_Cores, inter_op_parallelism_threads=num_Cores)))
+    if not use_ae_weights and os.path.isfile(os.path.join(save_dir,"ae_weights.pt")):
+        os.remove(os.path.join(save_dir,"ae_weights.pt"))
 
-    if not use_ae_weights and os.path.isfile(os.path.join(save_dir,"ae_weights.h5")):
-        os.remove(os.path.join(save_dir,"ae_weights.h5"))
-  
-    tic=get_time()#recored time         
-    desc=DescModel(dims=dims,
-              x=adata.X,
-              alpha=alpha,
-              tol=tol,
-              init=init,
-              louvain_resolution=louvain_resolution,
-              n_neighbors=n_neighbors,
-              pretrain_epochs=pretrain_epochs,
-              epochs_fit=epochs_fit,
-              batch_size=batch_size,
-              random_seed=random_seed,
-              activation=activation,
-              actincenter=actincenter,
-              drop_rate_SAE=drop_rate_SAE,
-              is_stacked=is_stacked,
-              use_earlyStop=use_earlyStop,
-              use_ae_weights=use_ae_weights,
-	      save_encoder_weights=save_encoder_weights,
-              save_encoder_step=save_encoder_step,
-              save_dir=save_dir,
-              kernel_clustering=kernel_clustering
-    )
-    desc.compile(optimizer=SGD(0.01,0.9),loss='kld')
-    Embeded_z,q_pred=desc.fit(maxiter=max_iter)
+    tic=get_time()#recored time
+    try:
+        desc=DescModel(dims=dims,
+                  x=adata.X,
+                  alpha=alpha,
+                  tol=tol,
+                  init=init,
+                  louvain_resolution=louvain_resolution,
+                  n_neighbors=n_neighbors,
+                  pretrain_epochs=pretrain_epochs,
+                  epochs_fit=epochs_fit,
+                  batch_size=batch_size,
+                  random_seed=random_seed,
+                  activation=activation,
+                  actincenter=actincenter,
+                  drop_rate_SAE=drop_rate_SAE,
+                  is_stacked=is_stacked,
+                  use_earlyStop=use_earlyStop,
+                  use_ae_weights=use_ae_weights,
+                  save_encoder_weights=save_encoder_weights,
+                  save_encoder_step=save_encoder_step,
+                  save_dir=save_dir,
+                  kernel_clustering=kernel_clustering,
+                  device=device
+        )
+        desc.compile(optimizer=SGD(0.01,0.9),loss='kld')
+        Embeded_z,q_pred=desc.fit(maxiter=max_iter)
+    finally:
+        torch.set_num_threads(num_threads)
     print("The desc has been trained successfully!!!!!!")
     if verbose:
         print("The summary of desc model is:")
         desc.model.summary()
     print("The runtime of (resolution="+str(louvain_resolution)+")is:",get_time()-tic)
     y_pred=pd.Series(np.argmax(q_pred,axis=1),index=adata.obs.index,dtype='category')
-    y_pred.cat.categories=list(range(len(y_pred.unique())))
+    y_pred=y_pred.cat.rename_categories(list(range(len(y_pred.cat.categories))))
     adata.obs['desc_'+str(louvain_resolution)]=y_pred
     adata.obsm['X_Embeded_z'+str(louvain_resolution)]=Embeded_z
     if do_tsne:
         num_Cores_tsne=int(num_Cores_tsne) if total_cpu>int(num_Cores_tsne) else int(math.ceil(total_cpu/2))
         sc.tl.tsne(adata,use_rep="X_Embeded_z"+str(louvain_resolution),learning_rate=learning_rate,perplexity=perplexity,n_jobs=num_Cores_tsne)
         adata.obsm["X_tsne"+str(louvain_resolution)]=adata.obsm["X_tsne"].copy()
-        print('tsne finished and added X_tsne'+str(louvain_resolution),' into the umap coordinates (adata.obsm)\n')
+        print('tsne finished and added X_tsne'+str(louvain_resolution),' into the t-SNE coordinates (adata.obsm)\n')
         #sc.logging.msg(' tsne finished', t=True, end=' ', v=4)
         #sc.logging.msg('and added\n'
         #         '    \'X_tsne\''+str(louvain_resolution),'the tsne coordinates (adata.obs)\n', v=4)
@@ -238,7 +232,7 @@ def train(data,dims=None,
 
     batch_size: `int`, optional. Default:`256`, the batch size for autoencoder model and clustering model. 
 
-    activation; `str`, optional. Default,`relu`. the activation function for autoencoder model,which can be 'elu,selu,softplus,tanh,siogmid et al.', for detail please refer to`https://keras.io/activations/`.
+    activation; `str`, optional. Default,`relu`. the activation function for autoencoder model,which can be 'relu', 'elu', 'selu', 'softplus', 'softsign', 'tanh', 'sigmoid', 'gelu', 'swish' or 'linear'.
 
     actincenter: `str`, optional. Default,'tanh', the activation function for the last layer in encoder and decoder model.
 
@@ -248,7 +242,7 @@ def train(data,dims=None,
 
     use_earlyStop:`bool`,optional. Default,`True`. Stops training if loss does not improve if given min_delta=1e-4, patience=10.
 
-    use_ae_weights: `bool`, optional. Default, `True`. Whether use ae_weights that has been pretrained(which must saved in `save_dir/ae_weights.h5`)
+    use_ae_weights: `bool`, optional. Default, `True`. Whether use ae_weights that has been pretrained(which must saved in `save_dir/ae_weights.pt`, or `save_dir/ae_weights.h5` written by desc 2.x)
 
     save_encoder_weights: `bool`, optional. Default, `False`, it will save inter_ae_weights for every 20 iterations. )
 
@@ -260,11 +254,11 @@ def train(data,dims=None,
 
     num_Cores: `int`, optional. Default,`20`. How many cpus use during tranning. if `num_Cores` > the max cpus in our computer, num_Cores will use  a half of cpus in your computer. 
 
-    use_GPU=False, `bool`, optional. Default, `True`. it will use GPU to train model if GPU is avaliable 
+    use_GPU=False, `bool`, optional. Default, `False`. it will use GPU (CUDA or Apple MPS) to train model if GPU is avaliable 
 
     GPU_id=None, `str or int`, optional.The GPU id in your device.  Default, `None`. it will use GPU to train model if `use_GPU`==True and GPU_id is not None; 
 
-    random_seed, `int`,optional. Default,`201809`. the random seed for random.seed, numpy.random.seed, tensorflow.set_random_seed
+    random_seed, `int`,optional. Default,`201809`. the random seed for random.seed, numpy.random.seed, torch.manual_seed
 
     verbose,`bool`, optional. Default, `True`. It will ouput the model summary if verbose==True.
 
@@ -279,11 +273,8 @@ def train(data,dims=None,
 
     if isinstance(data,AnnData):
         adata=data
-    elif isinstance(data,pd.DataFrame):
-        adata=sc.AnnData(data,obs=data.index,var=data.columns)
     else:
-        x=data.toarray() if issparse(data) else data
-        adata=sc.AnnData(x)
+        adata=sc.AnnData(data) # np.ndarray, sp.spmatrix or pd.DataFrame (index and columns become obs_names and var_names)
 
     if dims is None:
         dims=getdims(adata.shape)
@@ -300,7 +291,7 @@ def train(data,dims=None,
     for ith,resolution in enumerate(louvain_resolution):
         print("Start to process resolution=",str(resolution))
         use_ae_weights=use_ae_weights if ith==0 else True
-        res=train_single(data=data,
+        res=train_single(data=adata,
             dims=dims,
             alpha=alpha,
             tol=tol,
@@ -332,10 +323,10 @@ def train(data,dims=None,
             do_umap=do_umap,
             kernel_clustering=kernel_clustering)
         #update adata
-        data=res
+        adata=res
     print("The run time for all resolution is:",get_time()-time_start)
-    print("After training, the information of adata is:\n",data)
-    return data
+    print("After training, the information of adata is:\n",adata)
+    return adata
 
 
 if __name__=='__main__':
@@ -344,19 +335,18 @@ if __name__=='__main__':
     parser.add_argument('--use_GPU', default=False, type=bool)
     args = parser.parse_args()
     print(args)
-    import os
+    from desc.datasets import pbmc
 
-    #test for pbmc
-    #adata=sc.read_10x_mtx("../datasets/pbmc",var_names="gene_symbols",cache=True)
-    adata=sc.read("../datasets/pbmc.h5ad")
+    #test for pbmc, run with `python -m desc.models.desc`
+    adata=pbmc()
     sc.pp.filter_cells(adata, min_genes=200)
     sc.pp.filter_genes(adata, min_cells=3)
     mito_genes = adata.var_names.str.startswith('MT-')
-    adata.obs['percent_mito'] = np.sum(adata[:, mito_genes].X, axis=1).A1 / np.sum(adata.X, axis=1).A1
-    adata.obs['n_counts'] = adata.X.sum(axis=1).A1
+    adata.obs['percent_mito'] = np.asarray(adata[:, mito_genes].X.sum(axis=1)).ravel() / np.asarray(adata.X.sum(axis=1)).ravel()
+    adata.obs['n_counts'] = np.asarray(adata.X.sum(axis=1)).ravel()
     adata = adata[adata.obs['n_genes'] < 2500, :].copy()
     adata = adata[adata.obs['percent_mito'] < 0.05, :].copy()
-    sc.pp.normalize_per_cell(adata, counts_per_cell_after=1e4)
+    sc.pp.normalize_total(adata, target_sum=1e4)
     sc.pp.log1p(adata)
     sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5)
     print(adata)

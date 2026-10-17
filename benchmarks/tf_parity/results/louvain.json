@@ -1,0 +1,330 @@
+{
+ "pbmc_embedding": [
+  {
+   "resolution": 0.2,
+   "n_clusters_louvainpkg": 9.4,
+   "n_clusters_igraph": 8.6,
+   "ari_cross": 0.5281218466830463,
+   "ari_within_louvainpkg": 0.7367673284184378,
+   "ari_within_igraph": 0.647826408656496,
+   "modularity_louvainpkg": 0.9089901561023405,
+   "modularity_igraph": 0.9136381148117065
+  },
+  {
+   "resolution": 0.4,
+   "n_clusters_louvainpkg": 20.4,
+   "n_clusters_igraph": 18.2,
+   "ari_cross": 0.6981695685581657,
+   "ari_within_louvainpkg": 0.8294390723342948,
+   "ari_within_igraph": 0.7498031876562838,
+   "modularity_louvainpkg": 0.8586506570864045,
+   "modularity_igraph": 0.8679267218744504
+  },
+  {
+   "resolution": 0.6,
+   "n_clusters_louvainpkg": 28.6,
+   "n_clusters_igraph": 25.4,
+   "ari_cross": 0.7736445689572912,
+   "ari_within_louvainpkg": 0.9110077856371237,
+   "ari_within_igraph": 0.8279783933883864,
+   "modularity_louvainpkg": 0.8154450590243002,
+   "modularity_igraph": 0.8255016208504298
+  },
+  {
+   "resolution": 0.8,
+   "n_clusters_louvainpkg": 33.2,
+   "n_clusters_igraph": 32.2,
+   "ari_cross": 0.7989377967180756,
+   "ari_within_louvainpkg": 0.9313422461947993,
+   "ari_within_igraph": 0.8937677069513885,
+   "modularity_louvainpkg": 0.7731301282516692,
+   "modularity_igraph": 0.7842918182522072
+  },
+  {
+   "resolution": 1.0,
+   "n_clusters_louvainpkg": 36.8,
+   "n_clusters_igraph": 37.2,
+   "ari_cross": 0.837729161307992,
+   "ari_within_louvainpkg": 0.9514839170209444,
+   "ari_within_igraph": 0.9326319721571235,
+   "modularity_louvainpkg": 0.7335422798454603,
+   "modularity_igraph": 0.743398699163945
+  },
+  {
+   "resolution": 1.2,
+   "n_clusters_louvainpkg": 40.2,
+   "n_clusters_igraph": 39.2,
+   "ari_cross": 0.8557875754971775,
+   "ari_within_louvainpkg": 0.956077089345915,
+   "ari_within_igraph": 0.9324956571126831,
+   "modularity_louvainpkg": 0.6939113536385115,
+   "modularity_igraph": 0.7027561737832
+  },
+  {
+   "resolution": 1.6,
+   "n_clusters_louvainpkg": 48.8,
+   "n_clusters_igraph": 49.6,
+   "ari_cross": 0.8770099363776132,
+   "ari_within_louvainpkg": 0.9588140983514976,
+   "ari_within_igraph": 0.9389766381514157,
+   "modularity_louvainpkg": 0.6154831022875931,
+   "modularity_igraph": 0.6240489556531025
+  },
+  {
+   "resolution": 2.0,
+   "n_clusters_louvainpkg": 53.0,
+   "n_clusters_igraph": 55.8,
+   "ari_cross": 0.8421743073227153,
+   "ari_within_louvainpkg": 0.9680658796238072,
+   "ari_within_igraph": 0.9703832700059974,
+   "modularity_louvainpkg": 0.5376218511783998,
+   "modularity_igraph": 0.549420847504815
+  }
+ ],
+ "pbmc_pca": [
+  {
+   "resolution": 0.2,
+   "n_clusters_louvainpkg": 24.4,
+   "n_clusters_igraph": 26.8,
+   "ari_cross": 0.6539651516827323,
+   "ari_within_louvainpkg": 0.8295848889346498,
+   "ari_within_igraph": 0.7229437171102296,
+   "modularity_louvainpkg": 0.9220550014674836,
+   "modularity_igraph": 0.9288955382739887
+  },
+  {
+   "resolution": 0.4,
+   "n_clusters_louvainpkg": 33.6,
+   "n_clusters_igraph": 35.8,
+   "ari_cross": 0.7836104290162608,
+   "ari_within_louvainpkg": 0.9288572281033481,
+   "ari_within_igraph": 0.8883662075861926,
+   "modularity_louvainpkg": 0.8737242595062652,
+   "modularity_igraph": 0.8831669335124529
+  },
+  {
+   "resolution": 0.6,
+   "n_clusters_louvainpkg": 41.4,
+   "n_clusters_igraph": 45.6,
+   "ari_cross": 0.8041236272370611,
+   "ari_within_louvainpkg": 0.9513737808126994,
+   "ari_within_igraph": 0.9315574385739526,
+   "modularity_louvainpkg": 0.8261933093185139,
+   "modularity_igraph": 0.8406952495422019
+  },
+  {
+   "resolution": 0.8,
+   "n_clusters_louvainpkg": 46.4,
+   "n_clusters_igraph": 49.8,
+   "ari_cross": 0.8545964012818129,
+   "ari_within_louvainpkg": 0.9512386102175416,
+   "ari_within_igraph": 0.9541263949888034,
+   "modularity_louvainpkg": 0.7853772586933468,
+   "modularity_igraph": 0.7975252199489649
+  },
+  {
+   "resolution": 1.0,
+   "n_clusters_louvainpkg": 48.2,
+   "n_clusters_igraph": 53.4,
+   "ari_cross": 0.8375747612863778,
+   "ari_within_louvainpkg": 0.9659131455139788,
+   "ari_within_igraph": 0.9519985408360252,
+   "modularity_louvainpkg": 0.7424088604548132,
+   "modularity_igraph": 0.7566251854538076
+  },
+  {
+   "resolution": 1.2,
+   "n_clusters_louvainpkg": 50.0,
+   "n_clusters_igraph": 57.2,
+   "ari_cross": 0.8552986521765122,
+   "ari_within_louvainpkg": 0.8977407365463902,
+   "ari_within_igraph": 0.9594972781297446,
+   "modularity_louvainpkg": 0.7033142654033069,
+   "modularity_igraph": 0.7176542175619196
+  },
+  {
+   "resolution": 1.6,
+   "n_clusters_louvainpkg": 53.0,
+   "n_clusters_igraph": 59.6,
+   "ari_cross": 0.8753007932091276,
+   "ari_within_louvainpkg": 0.9707495820230007,
+   "ari_within_igraph": 0.9749623771447553,
+   "modularity_louvainpkg": 0.6327987367689127,
+   "modularity_igraph": 0.6448408824708998
+  },
+  {
+   "resolution": 2.0,
+   "n_clusters_louvainpkg": 57.2,
+   "n_clusters_igraph": 62.8,
+   "ari_cross": 0.8877793319791071,
+   "ari_within_louvainpkg": 0.9628951421545138,
+   "ari_within_igraph": 0.980023308079312,
+   "modularity_louvainpkg": 0.5623803382310852,
+   "modularity_igraph": 0.5748262978728738
+  }
+ ],
+ "paul_embedding": [
+  {
+   "resolution": 0.2,
+   "n_clusters_louvainpkg": 4.2,
+   "n_clusters_igraph": 5.4,
+   "ari_cross": 0.7824771368812229,
+   "ari_within_louvainpkg": 0.8485697824287713,
+   "ari_within_igraph": 0.798264695250069,
+   "modularity_louvainpkg": 0.8798672641334988,
+   "modularity_igraph": 0.8799243838761506
+  },
+  {
+   "resolution": 0.4,
+   "n_clusters_louvainpkg": 5.8,
+   "n_clusters_igraph": 6.4,
+   "ari_cross": 0.6964027922646713,
+   "ari_within_louvainpkg": 0.7649144726534127,
+   "ari_within_igraph": 0.6461417881443694,
+   "modularity_louvainpkg": 0.8010479071623049,
+   "modularity_igraph": 0.8028220164270866
+  },
+  {
+   "resolution": 0.6,
+   "n_clusters_louvainpkg": 7.6,
+   "n_clusters_igraph": 9.0,
+   "ari_cross": 0.6640771796610052,
+   "ari_within_louvainpkg": 0.7738604787431853,
+   "ari_within_igraph": 0.7639067598602196,
+   "modularity_louvainpkg": 0.7561889748858053,
+   "modularity_igraph": 0.7546880894999977
+  },
+  {
+   "resolution": 0.8,
+   "n_clusters_louvainpkg": 9.2,
+   "n_clusters_igraph": 9.8,
+   "ari_cross": 0.5864092325088228,
+   "ari_within_louvainpkg": 0.6875308699804565,
+   "ari_within_igraph": 0.6532548049806451,
+   "modularity_louvainpkg": 0.715343147506265,
+   "modularity_igraph": 0.716008726989749
+  },
+  {
+   "resolution": 1.0,
+   "n_clusters_louvainpkg": 10.0,
+   "n_clusters_igraph": 11.2,
+   "ari_cross": 0.5919092811806503,
+   "ari_within_louvainpkg": 0.6880325979135267,
+   "ari_within_igraph": 0.6468130505613109,
+   "modularity_louvainpkg": 0.6841638772114713,
+   "modularity_igraph": 0.6854442368077186
+  },
+  {
+   "resolution": 1.2,
+   "n_clusters_louvainpkg": 10.0,
+   "n_clusters_igraph": 12.8,
+   "ari_cross": 0.5567824481659878,
+   "ari_within_louvainpkg": 0.7042873753063013,
+   "ari_within_igraph": 0.6389403539451777,
+   "modularity_louvainpkg": 0.6542997524309293,
+   "modularity_igraph": 0.6598282831450961
+  },
+  {
+   "resolution": 1.6,
+   "n_clusters_louvainpkg": 14.0,
+   "n_clusters_igraph": 16.6,
+   "ari_cross": 0.5189263278259922,
+   "ari_within_louvainpkg": 0.6039715075399694,
+   "ari_within_igraph": 0.5836448518219911,
+   "modularity_louvainpkg": 0.6110161380202743,
+   "modularity_igraph": 0.6198718366675698
+  },
+  {
+   "resolution": 2.0,
+   "n_clusters_louvainpkg": 17.6,
+   "n_clusters_igraph": 22.8,
+   "ari_cross": 0.449829584246971,
+   "ari_within_louvainpkg": 0.5521406974281738,
+   "ari_within_igraph": 0.544068302040099,
+   "modularity_louvainpkg": 0.5767035188019575,
+   "modularity_igraph": 0.5905837727927851
+  }
+ ],
+ "paul_pca": [
+  {
+   "resolution": 0.2,
+   "n_clusters_louvainpkg": 5.0,
+   "n_clusters_igraph": 5.0,
+   "ari_cross": 0.8187209508649153,
+   "ari_within_louvainpkg": 0.8756745174840459,
+   "ari_within_igraph": 0.7967047784102463,
+   "modularity_louvainpkg": 0.9107266707044019,
+   "modularity_igraph": 0.9111717928594156
+  },
+  {
+   "resolution": 0.4,
+   "n_clusters_louvainpkg": 7.6,
+   "n_clusters_igraph": 8.0,
+   "ari_cross": 0.6608028681830865,
+   "ari_within_louvainpkg": 0.7345477126266482,
+   "ari_within_igraph": 0.7173884014235454,
+   "modularity_louvainpkg": 0.860999501428125,
+   "modularity_igraph": 0.8644127235976532
+  },
+  {
+   "resolution": 0.6,
+   "n_clusters_louvainpkg": 9.0,
+   "n_clusters_igraph": 10.0,
+   "ari_cross": 0.6588594861839414,
+   "ari_within_louvainpkg": 0.7183717867530717,
+   "ari_within_igraph": 0.6537987418659152,
+   "modularity_louvainpkg": 0.8282042757901099,
+   "modularity_igraph": 0.8325419397133954
+  },
+  {
+   "resolution": 0.8,
+   "n_clusters_louvainpkg": 10.8,
+   "n_clusters_igraph": 11.4,
+   "ari_cross": 0.6633817009150386,
+   "ari_within_louvainpkg": 0.708558039142687,
+   "ari_within_igraph": 0.727420900328105,
+   "modularity_louvainpkg": 0.8034780225185608,
+   "modularity_igraph": 0.8052505445540465
+  },
+  {
+   "resolution": 1.0,
+   "n_clusters_louvainpkg": 11.8,
+   "n_clusters_igraph": 13.8,
+   "ari_cross": 0.5825834258403948,
+   "ari_within_louvainpkg": 0.6863462612722175,
+   "ari_within_igraph": 0.745513053224939,
+   "modularity_louvainpkg": 0.7790534104025819,
+   "modularity_igraph": 0.785058990450099
+  },
+  {
+   "resolution": 1.2,
+   "n_clusters_louvainpkg": 13.4,
+   "n_clusters_igraph": 14.2,
+   "ari_cross": 0.5989673300920105,
+   "ari_within_louvainpkg": 0.6631261945423528,
+   "ari_within_igraph": 0.68327002797566,
+   "modularity_louvainpkg": 0.7597138235277112,
+   "modularity_igraph": 0.7649291715286688
+  },
+  {
+   "resolution": 1.6,
+   "n_clusters_louvainpkg": 16.6,
+   "n_clusters_igraph": 19.0,
+   "ari_cross": 0.5812601505270064,
+   "ari_within_louvainpkg": 0.7171217206664798,
+   "ari_within_igraph": 0.6169140937377888,
+   "modularity_louvainpkg": 0.7290842714199952,
+   "modularity_igraph": 0.7334621025220407
+  },
+  {
+   "resolution": 2.0,
+   "n_clusters_louvainpkg": 19.4,
+   "n_clusters_igraph": 21.6,
+   "ari_cross": 0.6040902934262071,
+   "ari_within_louvainpkg": 0.6732852785368248,
+   "ari_within_igraph": 0.6428449348844123,
+   "modularity_louvainpkg": 0.702469233857679,
+   "modularity_igraph": 0.7102609162397637
+  }
+ ]
+}

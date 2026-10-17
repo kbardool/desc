@@ -70,7 +70,7 @@ MathJax.Hub.Config({
 
 <!-- 文字闪烁参考链接 https://www.mybj123.com/6311.html  -->
 
-<div class="box">New New New (25/07/2020) !!!  </div>
+<div class="box">New (October 2026): desc 3.0 runs on PyTorch</div>
 
 <style>  
     .box{ 
@@ -112,11 +112,12 @@ MathJax.Hub.Config({
 	}
 </style>
 
-<p>Because of the difference between <code class="highlighter-rouge">tensorflow 1*</code> and <code class="highlighter-rouge">tensorflow 2*</code>, we updated our <a href="https://github.com/eleozzr/desc">desc</a> algorithm into two version such that it can be compatible with <code class="highlighter-rouge">tensorflow 1*</code> and <code class="highlighter-rouge">tensorflow 2*</code>, respectively.</p>
+<p>Starting with <code class="highlighter-rouge">desc 3.0</code>, DESC is implemented in <a href="https://pytorch.org">PyTorch</a> and requires Python 3.14 or newer. Existing calls such as <code class="highlighter-rouge">desc.train(adata, ...)</code> keep working. See <a href="/desc/installation.html">Installation</a> for how to install it and what changed, and the jupyter notebook <a href="./jupyter_notebook/desc_3.0_paul.ipynb">desc_3.0_paul.ipynb</a> for a complete example.</p>
 
+<p>The older releases remain available for TensorFlow users:</p>
 <ol>
-  <li>For  <code class="highlighter-rouge">tensorflow 1*</code>, we released <code class="highlighter-rouge">desc(2.0.3)</code>. Please see our jupyter notebook example <a href="./jupyter_notebook/desc_2.0.3_paul.ipynb">desc_2.0.3_paul.ipynb</a></li>
-  <li>For  <code class="highlighter-rouge">tensorflow 2*</code>, we released <code class="highlighter-rouge">desc(2.1.1)</code>. Please see our jupyter notebook example <a href="./jupyter_notebook/desc_2.1.1_paul.ipynb">desc_2.1.1_paul.ipynb</a></li>
+  <li>For  <code class="highlighter-rouge">tensorflow 1*</code>, use <code class="highlighter-rouge">desc(2.0.3)</code>. Please see our jupyter notebook example <a href="./jupyter_notebook/desc_2.0.3_paul.ipynb">desc_2.0.3_paul.ipynb</a></li>
+  <li>For  <code class="highlighter-rouge">tensorflow 2*</code>, use <code class="highlighter-rouge">desc(2.1.1)</code>. Please see our jupyter notebook example <a href="./jupyter_notebook/desc_2.1.1_paul.ipynb">desc_2.1.1_paul.ipynb</a></li>
 </ol>
 
 <p><br /></p>

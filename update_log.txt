@@ -10,3 +10,9 @@ require tensorflow<2.0 because some inconsistency between keras and tensorflow 2
 
 # 2020-07-25
 2.1.1: update scanpy dependency such that DESC  can be compatible with tensorflow 2.0. Please see `desc_2.1.1_paul.ipynb` for detail
+
+# 2026-10-16
+3.0.0: port DESC from TensorFlow/Keras to PyTorch. Requires Python>=3.14; packaged with pyproject.toml (uv_build) and managed with uv.
+       The public API (desc.train, DescModel, SAE, ...) is unchanged. Weights in save_dir are saved as .pt files; ae_weights.h5 from 2.x can still be loaded.
+       Louvain initialization uses igraph (the `louvain` package no longer installs). `alpha` is now passed to the clustering kernel.
+       New tutorial notebook desc_3.0_paul.ipynb (desc_paul.md is generated from it); docs site updated for 3.0; benchmarks/tf_parity compares 3.0 with 2.1.1.
